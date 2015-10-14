@@ -1,43 +1,50 @@
-Create database BigBank;
+
+Create database BigBank
+
 go
 
-USE BigBank;
+USE BigBank
 
-GO
+go
 
 CREATE TABLE customer
 (
 CustomerId INT PRIMARY KEY IDENTITY(1,1),
-CreateDate datetime NOT NULL,
+CreatedDate datetime NOT NULL,
 FirstName varchar(50) NOT NULL,
 LastName varchar(50) NOT NULL,
 Address1 varchar(100) NOT NULL,
 Address2 varchar(100),
 City varchar(40) NOT NULL,
 [State] varchar(40) NOT NULL,
-Zip varchar(20) NOT NULL,
+Zip varchar(20),
 )
 CREATE TABLE account
 (
-AccountId INT PRIMARY KEY IDENTITY(1,1),
-CustomerId int FOREIGN KEY REFERENCES customer(CustomerId) NOT NULL, 
+AccountId int IDENTITY(1,1) PRIMARY KEY,
+CustomerId int NOT NULL, 
 CreatedDate datetime NOT NULL,
 AccountNumber int NOT NULL,
 Balance int NOT NULL,
+FOREIGN KEY (CustomerId) REFERENCES Customer (CustomerId)
 )
 CREATE TABLE [transaction]
 (
-TransactionId INT PRIMARY KEY IDENTITY(1,1),
-AccountId int FOREIGN KEY REFERENCES account(AccountId) NOT NULL, 
+TransactionId int IDENTITY(1,1) PRIMARY KEY,
+AccountId int NOT NULL, 
 TransactionDate datetime NOT NULL,
 Amount decimal NOT NULL,
+FOREIGN KEY (AccountId) REFERENCES Account (AccountId)
+
 )
 CREATE TABLE [statement]
 (
-StatementId INT PRIMARY KEY IDENTITY(1,1),
-AccountId int FOREIGN KEY REFERENCES account(AccountId) NOT NULL,
+StatementId int IDENTITY(1,1) PRIMARY KEY, 
+AccountId int NOT NULL,
+CreatedDate datetime NOT NULL,
 StartDate datetime NOT NULL,
-EndDate datetime NOT NULL, 
+EndDate datetime NOT NULL,
+FOREIGN KEY (AccountId) REFERENCES Account (AccountId)
 )
 
 go
@@ -56,6 +63,18 @@ INSERT INTO account
 (AccountId, CustomerId, CreatedDate, AccountNumber, Balance)
 VALUES (3, 2, '2014-02-01', '1002', 1197465.05);
 SET IDENTITY_INSERT account OFF;
+
+go
+
+SET IDENTITY_INSERT customer ON;
+INSERT INTO customer
+(CustomerId, CreatedDate, FirstName, LastName, Address1, City, [State], Zip) 
+VALUES (1, '2013-06-09','John','Doe','123 Fake Street','San Diego','CA','92101');
+INSERT INTO customer
+(CustomerId, CreatedDate, FirstName, LastName, Address1, City, [State], Zip) 
+VALUES (2, '2014-02-01','Jane','Doe','124 Fake Street','San Diego','CA','92101');
+SET IDENTITY_INSERT customer OFF;
+
 
 
 INSERT INTO [transaction]
